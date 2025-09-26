@@ -14,6 +14,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Peer Mentor App",
   description: "A peer mentoring application",
+  verification: {
+    google: "mrpHBzHaSOrtessmeLWY_D_a4_v168RxWM2EqcQwB7E"
+  }
 };
 
 export default function RootLayout({ children }) {
