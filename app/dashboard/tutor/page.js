@@ -26,7 +26,6 @@ export default function TutorDashboard() {
     setUser({ ...JSON.parse(userData), ...profile });
   }, [router]);
 
-  // Mock data - replace with Supabase queries
   const upcomingSessions = [
     {
       id: 1,

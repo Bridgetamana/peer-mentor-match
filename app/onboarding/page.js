@@ -28,10 +28,8 @@ export default function Onboarding() {
   const handleProfileSubmit = (profile) => {
     console.log('Profile submitted:', profile);
 
-    // Save profile to localStorage (replace with Supabase)
     localStorage.setItem('userProfile', JSON.stringify(profile));
 
-    // Redirect to appropriate dashboard
     router.push(`/dashboard/${profile.role}`);
   };
 

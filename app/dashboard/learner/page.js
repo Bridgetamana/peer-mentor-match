@@ -28,7 +28,6 @@ export default function LearnerDashboard() {
     setUser({ ...JSON.parse(userData), ...profile });
   }, [router]);
 
-  // Mock data - replace with Supabase queries
   const recommendedTutors = [
     {
       id: 1,
@@ -78,7 +77,6 @@ export default function LearnerDashboard() {
 
   const handleBookSession = (tutor, slot) => {
     console.log('Booking session with', tutor.name, 'at', slot);
-    // Create session in Supabase
     alert(`Session booked with ${tutor.name} at ${slot}!`);
     setShowBooking(false);
     setSelectedTutor(null);
