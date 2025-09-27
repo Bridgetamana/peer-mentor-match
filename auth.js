@@ -1,8 +1,9 @@
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
+import "next-auth/jwt"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-    debug: process.env.NODE_ENV !== "production",
+    debug: !!process.env.AUTH_DEBUG,
     providers: [
         Google
     ],
