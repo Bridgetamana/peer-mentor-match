@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import RoleSelector from '../components/RoleSelector';
 import LearnerForm from '../components/LearnerForm';
 import TutorForm from '../components/TutorForm';
+import { logout } from '../actions';
 
 export default function Onboarding() {
   const router = useRouter();
@@ -12,13 +13,10 @@ export default function Onboarding() {
   const [selectedRole, setSelectedRole] = useState(null);
 
   useEffect(() => {
-    // Check if user is authenticated
     const userData = localStorage.getItem('user');
-    if (!userData) {
-      router.push('/auth/signin');
-      return;
+    if (userData) {
+      setUser(JSON.parse(userData));
     }
-    setUser(JSON.parse(userData));
   }, [router]);
 
   const handleRoleSelect = (role) => {
@@ -37,12 +35,6 @@ export default function Onboarding() {
     setSelectedRole(null);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('userProfile');
-    router.push('/');
-  };
-
   if (!user) {
     return <div>Loading...</div>;
   }
@@ -53,12 +45,14 @@ export default function Onboarding() {
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-gray-900">Complete Your Profile</h1>
-            <button
-              onClick={handleLogout}
-              className="btn-secondary"
-            >
-              Logout
-            </button>
+            <form action={logout}>
+
+              <button
+                className="btn-secondary"
+              >
+                Logout
+              </button>
+            </form>
           </div>
         </div>
       </header>

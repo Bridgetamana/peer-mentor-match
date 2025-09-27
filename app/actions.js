@@ -1,7 +1,14 @@
 "use server"
 
-import { signIn } from "@/auth"
+import { signIn, signOut } from "@/auth"
+import { redirect } from "next/navigation"
+
 
 export async function googleSignIn() {
     await signIn("google")
+}
+
+export async function logout() {
+    await signOut({ redirect: false }) 
+    redirect("/")
 }
