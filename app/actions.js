@@ -3,7 +3,6 @@
 import { signIn, signOut } from "@/auth"
 import { redirect } from "next/navigation"
 
-
 export async function googleSignIn() {
     await signIn("google")
 }

@@ -3,9 +3,7 @@
 :root {
   --background: #fffdfd;
   --foreground: #0d090a;
-  --border: #e5e7eb;
   --muted: rgb(70, 70, 70);
-  --input-bg: #f9fafb;
   --accent: #f0ee71;
   --primary: #ff3d64;
   --primary-dark: #d42145;

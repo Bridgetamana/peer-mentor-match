@@ -56,7 +56,7 @@ export default function Hero() {
         it, share your knowledge when you can.
       </p>
       <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-sm mx-auto">
-        <Link href="/auth/signup" className="btn-primary">
+        <Link href="/auth/signin" className="btn-primary">
           Find A Tutor
         </Link>
         <Link

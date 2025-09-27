@@ -11,7 +11,7 @@ export default function CTA() {
         goals
       </p>
       <Link
-        href="/auth/signup"
+        href="/auth/signin"
         className="box-shadow bg-accent text-foreground px-8 py-2 text-lg font-bold cursor-pointer inline-flex items-center gap-2 shadow-lg no-underline group"
       >
         Get Started

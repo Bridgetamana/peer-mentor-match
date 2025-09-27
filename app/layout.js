@@ -1,6 +1,5 @@
 import { Roboto, Roboto_Condensed } from "next/font/google";
 import "./globals.css";
-import Footer from "./components/landing-page/Footer";
 
 const roboto = Roboto({
   weight: ["100", "300", "400", "500", "700", "900"],
@@ -29,7 +28,6 @@ export default function RootLayout({ children }) {
         className={`${roboto.variable} ${robotoCondensed.variable} antialiased`}
       >
         {children}
-        <Footer />
       </body>
     </html>
   );
