@@ -1,32 +1,42 @@
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
+import Logo from "../../../public/peermatch-logo.png";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#00a63e]/70 border-t-2 mt-14">
+    <footer className="bg-[#45cf78]/70 border-t-2 mt-14">
       <div className="flex flex-col lg:flex-row lg:justify-between justify-center items-center p-10 max-w-[90%] mx-auto">
-        {/* <div>
-                    <Image alt="" src={}/>
-                </div> */}
-        <h3 className="text-accent text-3xl font-bold">PeerMatch</h3>
+        <Link href="/" className="w-44">
+          <Image alt="" src={Logo} />
+        </Link>
+        {/* <h3 className="text-primary text-3xl font-bold">PeerMatch</h3> */}
         <ul className="flex flex-col md:flex-row gap-5 text-center my-6">
           <li>
-            <Link href="" className="sm:text-lg font-semibold">
+            <Link
+              href="#problem"
+              className="sm:text-lg font-semibold hover:text-muted"
+            >
               Problem
             </Link>
           </li>
           <li>
-            <Link href="" className="sm:text-lg font-semibold">
+            <Link
+              href="#benefit"
+              className="sm:text-lg font-semibold hover:text-muted"
+            >
               Benefits
             </Link>
           </li>
           <li>
-            <Link href="" className="sm:text-lg font-semibold">
+            <Link
+              href="#testimonial"
+              className="sm:text-lg font-semibold hover:text-muted"
+            >
               Testimonial
             </Link>
           </li>
         </ul>
-        <p>© 2025 PeerMatch. All rights reserved.</p>
+        <p className="text-center">© 2025 PeerMatch. All rights reserved.</p>
       </div>
     </footer>
   );

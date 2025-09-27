@@ -1,6 +1,6 @@
 export default function HowItWorks() {
     return (
-      <div className="mb-20">
+      <section id="how-it-works" className="mb-20">
         <h2 className="section-title">How It Works</h2>
         <p className="section-desc">
           Three simple steps to connect with your ideal study partner
@@ -46,6 +46,6 @@ export default function HowItWorks() {
             <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-green-100 rounded-full opacity-30"></div>
           </div>
         </div>
-      </div>
+      </section>
     );
 }
