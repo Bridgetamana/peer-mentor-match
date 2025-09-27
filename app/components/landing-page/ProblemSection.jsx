@@ -23,7 +23,7 @@ export default function ProblemSection() {
               strokeLinejoin="round"
             />
           </svg>
-          <p className="text-2xl font-bold mb-3 mt-4 uppercase">
+          <p className="text-2xl font-bold mb-3 mt-4 uppercase font-roboto-condensed">
             Limited Access to Tutors
           </p>
           <p className="text-muted">
@@ -47,7 +47,7 @@ export default function ProblemSection() {
               strokeLinejoin="round"
             />
           </svg>
-          <p className="text-2xl font-bold mb-3 mt-4 uppercase">
+          <p className="text-2xl font-bold mb-3 mt-4 uppercase font-roboto-condensed">
             Irrelevant Online Help
           </p>
           <p className="text-muted">
@@ -71,7 +71,7 @@ export default function ProblemSection() {
               strokeLinejoin="round"
             />
           </svg>
-          <p className="text-2xl font-bold mb-3 mt-4 uppercase">
+          <p className="text-2xl font-bold mb-3 mt-4 uppercase font-roboto-condensed">
             Studying Alone is Hard
           </p>
           <p className="text-muted">

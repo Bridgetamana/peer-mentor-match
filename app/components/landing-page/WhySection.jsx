@@ -8,7 +8,7 @@ export default function Why() {
       </p>
       <div className="grid md:grid-cols-2 gap-6 mt-12">
         <div className="box-shadow bg-[#45cf78]/70 p-5">
-          <h3 className="text-xl font-bold mb-3 ">Smart Peer Matching</h3>
+          <h3 className="text-xl font-bold mb-3 font-roboto-condensed uppercase">Smart Peer Matching</h3>
           <p className="text-muted">
             No stress finding the right study buddy. We automatically connect
             you with a mentor or learner in your school, studying the same
@@ -17,7 +17,7 @@ export default function Why() {
         </div>
 
         <div className="box-shadow bg-accent/60 p-5">
-          <h3 className="text-xl font-bold mb-3 ">Learn Faster Together</h3>
+          <h3 className="text-xl font-bold mb-3 font-roboto-condensed uppercase">Learn Faster Together</h3>
           <p className="text-muted">
             Get paired with peers based on subjects, experience levels, and
             learning goals
@@ -25,7 +25,7 @@ export default function Why() {
         </div>
 
         <div className="box-shadow bg-accent/60 p-5">
-          <h3 className="text-xl font-bold mb-3 ">Teach to Master</h3>
+          <h3 className="text-xl font-bold mb-3 font-roboto-condensed uppercase">Teach to Master</h3>
           <p className="text-muted">
             Explaining concepts as a tutor strengthens your own understanding
             and builds confidence.
@@ -33,7 +33,7 @@ export default function Why() {
         </div>
 
         <div className="box-shadow bg-[#45cf78]/70 p-5">
-          <h3 className="text-xl font-bold mb-3 ">Free and Accessible</h3>
+          <h3 className="text-xl font-bold mb-3 font-roboto-condensed uppercase">Free and Accessible</h3>
           <p className="text-muted">
             peer mentoring is free and available anytime you need it.
           </p>

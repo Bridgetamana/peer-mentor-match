@@ -46,7 +46,7 @@ export default function Hero() {
         </svg>
         Over 30 students helped
       </div>
-      <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-2 uppercase">
+      <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-2 uppercase font-roboto-condensed">
         Find The Perfect
         <br />
         <span className="">Course Mentor</span>
