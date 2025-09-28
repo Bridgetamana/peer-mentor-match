@@ -12,13 +12,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     session: { strategy: "jwt" },
     callbacks: {
-        async redirect({ url, baseUrl }) {
-            return baseUrl + "/onboarding"
-        },
-        async session({ session, token }) {
-            if (token?.sub) {
-                session.user.id = token.sub
+        jwt({ token, user }) {
+            if (user) { 
+                token.id = user.id
             }
+            return token
+        },
+        session({ session, token }) {
+            session.user.id = token.id
             return session
         },
     },

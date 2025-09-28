@@ -1,45 +1,34 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useSession } from "next-auth/react"
 import RoleSelector from '../components/onboarding/RoleSelector';
 import LearnerForm from '../components/onboarding/LearnerForm';
 import TutorForm from '../components/onboarding/TutorForm';
 import Logo from "../../public/peermatch-logo.png"
 import Image from 'next/image';
 import Loading from '../components/loading';
+import LandingPage from '../components/landing-page/Index';
 
 export default function Onboarding() {
-  const router = useRouter();
+  const { data: session, status } = useSession()
   const [user, setUser] = useState(null);
   const [selectedRole, setSelectedRole] = useState(null);
 
-  useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-  }, [router]);
+  if (status === "loading") {
+    return <Loading />
+  }
+  if (!session) {
+    return <LandingPage />
+  }
 
   const handleRoleSelect = (role) => {
     setSelectedRole(role);
   };
 
-  const handleProfileSubmit = (profile) => {
-    console.log('Profile submitted:', profile);
-
-    localStorage.setItem('userProfile', JSON.stringify(profile));
-
-    router.push(`/dashboard/${profile.role}`);
-  };
-
   const handleBack = () => {
     setSelectedRole(null);
   };
-
-  if (!user) {
-    return <Loading />;
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -51,7 +40,7 @@ export default function Onboarding() {
 
       <main className="max-w-2xl mx-auto px-6 py-12">
         <h2 className="text-2xl font-semibold font-roboto-condensed">
-          Welcome, {user.name}!
+          Welcome, {session.user.name}!
         </h2>
         <p className="text-muted mb-6">Select the option that best describes your current needs</p>
 
@@ -62,14 +51,12 @@ export default function Onboarding() {
 
         {selectedRole === 'learner' && (
           <LearnerForm
-            onSubmit={handleProfileSubmit}
             onBack={handleBack}
           />
         )}
 
         {selectedRole === 'tutor' && (
           <TutorForm
-            onSubmit={handleProfileSubmit}
             onBack={handleBack}
           />
         )}
