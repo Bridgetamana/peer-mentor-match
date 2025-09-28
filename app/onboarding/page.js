@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import RoleSelector from '../components/RoleSelector';
-import LearnerForm from '../components/LearnerForm';
-import TutorForm from '../components/TutorForm';
+import RoleSelector from '../components/onboarding/RoleSelector';
+import LearnerForm from '../components/onboarding/LearnerForm';
+import TutorForm from '../components/onboarding/TutorForm';
 import Logo from "../../public/peermatch-logo.png"
 import Image from 'next/image';
 import Loading from '../components/loading';
