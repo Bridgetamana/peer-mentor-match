@@ -21,6 +21,18 @@ export default auth(async function middleware(req) {
     } catch { }
   }
 
+  if (!profile && req.auth?.user?.id) {
+    try {
+      const resp = await fetch(new URL("/api/profile/exists", nextUrl), {
+        headers: { cookie: req.headers.get("cookie") || "" }
+      })
+      if (resp.ok) {
+        const data = await resp.json()
+        if (data?.profile?.completed) profile = data.profile
+      }
+    } catch { }
+  }
+
   if (isOnboarding && profile?.completed) {
     const target = profile.role === "tutor" ? "/dashboard/tutor" : "/dashboard/learner"
     return NextResponse.redirect(new URL(target, nextUrl))
