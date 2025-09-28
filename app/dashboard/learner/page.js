@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import Loading from '@/app/components/loading';
+import Image from 'next/image';
+import Logo from '../../../public/peermatch-logo.png'
 
 export default function LearnerDashboard() {
   const { data: session, status } = useSession();
@@ -74,60 +76,51 @@ export default function LearnerDashboard() {
 
   if (showBooking && selectedTutor) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="bg-white border-b border-gray-200">
-          <div className="max-w-6xl mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => setShowBooking(false)}
-                  className="text-gray-600 hover:text-gray-900"
-                >
-                  ← Back to Dashboard
-                </button>
-                <h1 className="text-2xl font-bold text-gray-900">Book Session</h1>
-              </div>
-              <button onClick={handleLogout} className="btn-secondary">
-                Logout
-              </button>
+      <div className="min-h-screen bg-background">
+        <header className="px-6 py-4">
+          <div className="max-w-6xl mx-auto flex items-center justify-between">
+            <div className='flex items-center gap-4'>
+              <button onClick={() => setShowBooking(false)} className="box-shadow bg-accent hover:bg-accent/80 !p-2 font-medium">← Back</button>
+              <div className="text-2xl font-bold">Book Session</div>
             </div>
+            <button onClick={handleLogout} className="btn-primary !bg-accent">Logout</button>
           </div>
         </header>
 
-        <div className="max-w-2xl mx-auto px-6 py-12">
-          <div className="card bg-white p-8 mb-6">
+        <div className="max-w-2xl mx-auto px-6 py-10">
+          <div className="box-shadow bg-background p-8 mb-6">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-xl">
+              <div className="w-16 h-16 bg-success border-2 border-foreground flex items-center justify-center">
+                <span className="text-foreground font-bold text-xl">
                   {selectedTutor.name.split(' ').map(n => n[0]).join('')}
                 </span>
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900">{selectedTutor.name}</h3>
-                <p className="text-gray-600">{selectedTutor.subjects.join(', ')}</p>
+                <h3 className="text-xl font-bold">{selectedTutor.name}</h3>
+                <p className="text-muted">{selectedTutor.subjects.join(', ')}</p>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-yellow-500">★</span>
-                  <span className="text-sm text-gray-600">{selectedTutor.rating} ({selectedTutor.totalSessions} sessions)</span>
+                  <span>★</span>
+                  <span className="text-sm text-muted">{selectedTutor.rating} ({selectedTutor.totalSessions} sessions)</span>
                 </div>
               </div>
             </div>
 
             <div className="mb-6">
-              <h4 className="font-medium text-gray-900 mb-2">About {selectedTutor.name.split(' ')[0]}</h4>
-              <p className="text-gray-600">{selectedTutor.bio}</p>
+              <h4 className="font-medium mb-2">About {selectedTutor.name.split(' ')[0]}</h4>
+              <p className="text-muted">{selectedTutor.bio}</p>
             </div>
 
             <div>
-              <h4 className="font-medium text-gray-900 mb-4">Available Time Slots</h4>
+              <h4 className="font-medium mb-4">Available Time Slots</h4>
               <div className="grid gap-3">
                 {selectedTutor.availableSlots.map((slot, index) => (
                   <button
                     key={index}
                     onClick={() => handleBookSession(selectedTutor, slot)}
-                    className="p-4 text-left border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all cursor-pointer"
+                    className="box-shadow bg-background p-4 text-left hover:bg-accent/10 transition-colors"
                   >
-                    <div className="font-medium text-gray-900">{slot}</div>
-                    <div className="text-sm text-gray-600">60 minutes session</div>
+                    <div className="font-medium">{slot}</div>
+                    <div className="text-sm text-muted">60 minutes session</div>
                   </button>
                 ))}
               </div>
@@ -139,63 +132,54 @@ export default function LearnerDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-background">
+      <header className="px-6 py-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className='flex items-center gap-4'>
+            <div className='w-36'><Image src={Logo} alt="" /></div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Learner Dashboard</h1>
-              <p className="text-gray-600">Welcome back, {userName}!</p>
+              <h1 className="text-2xl font-bold">Learner Dashboard</h1>
+              <p className="text-muted">Welcome back, {userName}!</p>
             </div>
-            <button onClick={handleLogout} className="btn-secondary">
-              Logout
-            </button>
           </div>
+          <button onClick={handleLogout} className="btn-primary !bg-accent">Logout</button>
         </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8">
-        {/* Stats Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <div className="card bg-white p-6">
+          <div className="box-shadow bg-background p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
+              <div className="w-12 h-12 bg-accent flex items-center justify-center border-2 border-foreground">
+                📚
               </div>
               <div>
-                <p className="text-sm text-gray-600">Learning Streak</p>
-                <p className="text-2xl font-bold text-gray-900">7 days</p>
+                <p className="text-sm text-muted">Learning Streak</p>
+                <p className="text-2xl font-bold">7 days</p>
               </div>
             </div>
           </div>
 
-          <div className="card bg-white p-6">
+          <div className="box-shadow bg-background p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                </svg>
+              <div className="w-12 h-12 bg-success flex items-center justify-center border-2 border-foreground">
+                ✅
               </div>
               <div>
-                <p className="text-sm text-gray-600">Sessions Completed</p>
-                <p className="text-2xl font-bold text-gray-900">12</p>
+                <p className="text-sm text-muted">Sessions Completed</p>
+                <p className="text-2xl font-bold">12</p>
               </div>
             </div>
           </div>
 
-          <div className="card bg-white p-6">
+          <div className="box-shadow bg-background p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                </svg>
+              <div className="w-12 h-12 bg-accent flex items-center justify-center border-2 border-foreground">
+                ⭐
               </div>
               <div>
-                <p className="text-sm text-gray-600">Average Rating</p>
-                <p className="text-2xl font-bold text-gray-900">4.6</p>
+                <p className="text-sm text-muted">Average Rating</p>
+                <p className="text-2xl font-bold">4.6</p>
               </div>
             </div>
           </div>
@@ -204,15 +188,15 @@ export default function LearnerDashboard() {
         {/* Upcoming Sessions */}
         {upcomingSessions.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Upcoming Sessions</h2>
-            <div className="card bg-white p-6">
+            <h2 className="text-xl font-bold mb-4">Upcoming Sessions</h2>
+            <div className="box-shadow bg-background p-6">
               {upcomingSessions.map(session => (
-                <div key={session.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                <div key={session.id} className="flex items-center justify-between p-4 border-2 border-foreground">
                   <div>
-                    <h3 className="font-medium text-gray-900">{session.subject} with {session.tutorName}</h3>
-                    <p className="text-gray-600">{session.date} at {session.time}</p>
+                    <h3 className="font-medium">{session.subject} with {session.tutorName}</h3>
+                    <p className="text-muted">{session.date} at {session.time}</p>
                   </div>
-                  <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                  <span className="px-3 py-1 bg-success text-background text-sm font-bold border-2 border-foreground">
                     {session.status}
                   </span>
                 </div>
@@ -221,28 +205,27 @@ export default function LearnerDashboard() {
           </div>
         )}
 
-        {/* Recommended Tutors */}
         <div>
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Recommended Tutors</h2>
+          <h2 className="text-xl font-bold mb-4">Recommended Tutors</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {recommendedTutors.map(tutor => (
-              <div key={tutor.id} className="card bg-white p-6 hover:shadow-lg transition-shadow">
+              <div key={tutor.id} className="box-shadow bg-background p-6">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold">
+                  <div className="w-12 h-12 bg-success border-2 border-foreground flex items-center justify-center">
+                    <span className="font-bold">
                       {tutor.name.split(' ').map(n => n[0]).join('')}
                     </span>
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900">{tutor.name}</h3>
-                    <p className="text-sm text-gray-600">{tutor.experienceLevel}</p>
+                    <h3 className="font-bold">{tutor.name}</h3>
+                    <p className="text-sm text-muted">{tutor.experienceLevel}</p>
                   </div>
                 </div>
 
                 <div className="mb-4">
                   <div className="flex flex-wrap gap-2 mb-2">
                     {tutor.subjects.map(subject => (
-                      <span key={subject} className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm">
+                      <span key={subject} className="px-2 py-1 bg-accent text-foreground text-sm border-2 border-foreground">
                         {subject}
                       </span>
                     ))}
@@ -251,15 +234,15 @@ export default function LearnerDashboard() {
 
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <span className="text-yellow-500">★</span>
-                    <span className="text-sm text-gray-600">{tutor.rating}</span>
+                    <span>★</span>
+                    <span className="text-sm text-muted">{tutor.rating}</span>
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-muted">
                     🔥 {tutor.streak} day streak
                   </div>
                 </div>
 
-                <p className="text-gray-600 text-sm mb-4">{tutor.bio}</p>
+                <p className="text-muted text-sm mb-4">{tutor.bio}</p>
 
                 <button
                   onClick={() => {
