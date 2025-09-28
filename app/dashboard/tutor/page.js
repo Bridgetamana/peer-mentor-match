@@ -1,30 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useSession, signOut } from 'next-auth/react';
+import Loading from '@/app/components/loading';
 
 export default function TutorDashboard() {
-  const router = useRouter();
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    // Check authentication and profile
-    const userData = localStorage.getItem('user');
-    const profileData = localStorage.getItem('userProfile');
-
-    if (!userData || !profileData) {
-      router.push('/auth/signin');
-      return;
-    }
-
-    const profile = JSON.parse(profileData);
-    if (profile.role !== 'tutor') {
-      router.push('/dashboard/learner');
-      return;
-    }
-
-    setUser({ ...JSON.parse(userData), ...profile });
-  }, [router]);
+  const { data: session, status } = useSession();
+  const [user, setUser] = useState({ name: 'Tutor' });
 
   const upcomingSessions = [
     {
@@ -76,15 +58,11 @@ export default function TutorDashboard() {
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('userProfile');
-    router.push('/');
+    signOut({ callbackUrl: '/' })
   };
 
-  if (!user) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div>Loading...</div>
-    </div>;
+  if (status === 'loading') {
+    return <Loading />
   }
 
   return (

@@ -14,6 +14,7 @@ export default function Onboarding() {
   const { data: session, status } = useSession()
   const [user, setUser] = useState(null);
   const [selectedRole, setSelectedRole] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   if (status === "loading") {
     return <Loading />
@@ -29,6 +30,29 @@ export default function Onboarding() {
   const handleBack = () => {
     setSelectedRole(null);
   };
+
+  const handleSubmit = async (payload) => {
+    if (submitting) return
+    try {
+      setSubmitting(true)
+      const res = await fetch('/api/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) throw new Error('Failed to save profile')
+      const { profile } = await res.json()
+      if (profile?.role === 'tutor') {
+        window.location.href = '/dashboard/tutor'
+      } else {
+        window.location.href = '/dashboard/learner'
+      }
+    } catch (e) {
+      alert('Something went wrong. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -52,12 +76,16 @@ export default function Onboarding() {
         {selectedRole === 'learner' && (
           <LearnerForm
             onBack={handleBack}
+            onSubmit={handleSubmit}
+            submitting={submitting}
           />
         )}
 
         {selectedRole === 'tutor' && (
           <TutorForm
             onBack={handleBack}
+            onSubmit={handleSubmit}
+            submitting={submitting}
           />
         )}
       </main>

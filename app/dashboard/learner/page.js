@@ -1,32 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useSession, signOut } from 'next-auth/react';
+import Loading from '@/app/components/loading';
 
 export default function LearnerDashboard() {
-  const router = useRouter();
-  const [user, setUser] = useState(null);
+  const { data: session, status } = useSession();
   const [selectedTutor, setSelectedTutor] = useState(null);
   const [showBooking, setShowBooking] = useState(false);
-
-  useEffect(() => {
-    // Check authentication and profile
-    const userData = localStorage.getItem('user');
-    const profileData = localStorage.getItem('userProfile');
-
-    if (!userData || !profileData) {
-      router.push('/auth/signin');
-      return;
-    }
-
-    const profile = JSON.parse(profileData);
-    if (profile.role !== 'learner') {
-      router.push('/dashboard/tutor');
-      return;
-    }
-
-    setUser({ ...JSON.parse(userData), ...profile });
-  }, [router]);
 
   const recommendedTutors = [
     {
@@ -83,16 +64,13 @@ export default function LearnerDashboard() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('userProfile');
-    router.push('/');
+    signOut({ callbackUrl: '/' })
   };
 
-  if (!user) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div>Loading...</div>
-    </div>;
+  if (status === 'loading') {
+    return <Loading />
   }
+  const userName = session?.user?.name || 'Learner'
 
   if (showBooking && selectedTutor) {
     return (
@@ -168,7 +146,7 @@ export default function LearnerDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Learner Dashboard</h1>
-              <p className="text-gray-600">Welcome back, {user.name}!</p>
+              <p className="text-gray-600">Welcome back, {userName}!</p>
             </div>
             <button onClick={handleLogout} className="btn-secondary">
               Logout

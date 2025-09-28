@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function LearnerForm({ onSubmit, onBack }) {
+export default function LearnerForm({ onSubmit, onBack, submitting }) {
   const [formData, setFormData] = useState({
     subject: "",
     specificTopic: "",
@@ -187,9 +187,10 @@ export default function LearnerForm({ onSubmit, onBack }) {
           </div>
           <button
             type="submit"
-            className="btn-primary w-full !text-xl !py-4 !font-bold"
+            disabled={!!submitting}
+            className="btn-primary w-full !text-xl !py-4 !font-bold disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Find My Study Partner
+            {submitting ? 'Submitting…' : 'Find My Study Partner'}
           </button>
         </form>
       </div>

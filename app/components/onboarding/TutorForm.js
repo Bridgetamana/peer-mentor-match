@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function TutorForm({ onSubmit, onBack }) {
+export default function TutorForm({ onSubmit, onBack, submitting }) {
   const [formData, setFormData] = useState({
     name: "",
     school: "",
@@ -102,8 +102,8 @@ export default function TutorForm({ onSubmit, onBack }) {
                   type="button"
                   onClick={() => handleSubjectToggle(subject.id)}
                   className={`p-4 text-left font-medium transition-all ${formData.subjects.includes(subject.id)
-                      ? "bg-primary border-2 border-foreground text-background shadow-[6px_4px_#0d090a]"
-                      : "box-shadow bg-background hover:bg-accent/10"
+                    ? "bg-primary border-2 border-foreground text-background shadow-[6px_4px_#0d090a]"
+                    : "box-shadow bg-background hover:bg-accent/10"
                     }`}
                 >
                   <div className="font-bold text-lg">{subject.label}</div>
@@ -213,9 +213,10 @@ export default function TutorForm({ onSubmit, onBack }) {
           </div>
           <button
             type="submit"
-            className="btn-primary w-full !text-xl !py-4 !font-bold !bg-success"
+            disabled={!!submitting}
+            className="btn-primary w-full !text-xl !py-4 !font-bold !bg-success disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Start Helping Students
+            {submitting ? 'Submitting…' : 'Start Helping Students'}
           </button>
         </form>
       </div>
