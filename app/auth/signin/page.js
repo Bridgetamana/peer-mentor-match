@@ -5,7 +5,7 @@ import Logo from "../../../public/peermatch-logo.png"
 
 export default function SignIn() {
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-6">
+    <div className="bg-background flex items-center justify-center px-6">
       <div className="max-w-md w-full">
         <div className="flex justify-center mb-6 text-center">
           <Link href="/" className="w-48">

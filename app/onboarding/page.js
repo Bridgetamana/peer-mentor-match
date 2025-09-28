@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import RoleSelector from '../components/RoleSelector';
 import LearnerForm from '../components/LearnerForm';
 import TutorForm from '../components/TutorForm';
-import { logout } from '../actions';
+import Logo from "../../public/peermatch-logo.png"
+import Image from 'next/image';
+import Loading from '../components/loading';
 
 export default function Onboarding() {
   const router = useRouter();
@@ -36,36 +38,23 @@ export default function Onboarding() {
   };
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">Complete Your Profile</h1>
-            <form action={logout}>
-
-              <button
-                className="btn-secondary"
-              >
-                Logout
-              </button>
-            </form>
-          </div>
+    <div className="min-h-screen bg-background">
+      <header className="px-6 py-4">
+        <div className='w-36'>
+          <Image src={Logo} alt='' />
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-6 py-12">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-            Welcome, {user.name}!
-          </h2>
-          <p className="text-gray-600">
-            Let&apos;s set up your profile to find the perfect learning matches
-          </p>
-        </div>
+        <h2 className="text-2xl font-semibold font-roboto-condensed">
+          Welcome, {user.name}!
+        </h2>
+        <p className="text-muted mb-6">Select the option that best describes your current needs</p>
+
 
         {!selectedRole && (
           <RoleSelector onRoleSelect={handleRoleSelect} />
