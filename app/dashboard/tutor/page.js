@@ -1,12 +1,62 @@
 'use client';
 
-import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 import Loading from '@/app/components/loading';
+import Image from 'next/image';
+import Logo from '../../../public/peermatch-logo.png'
 
 export default function TutorDashboard() {
   const { data: session, status } = useSession();
-  const [user, setUser] = useState({ name: 'Tutor' });
+  const [profile, setProfile] = useState(null);
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [profileError, setProfileError] = useState(null);
+
+  const SUBJECT_LABELS = {
+    math: 'Mathematics',
+    science: 'Science (Physics, Chemistry, Biology)',
+    programming: 'Programming & Computer Science',
+    languages: 'Languages & Literature',
+    other: 'Other'
+  };
+  const EXPERIENCE_LABELS = {
+    learning: 'Still learning',
+    comfortable: 'Comfortable',
+    expert: 'Expert'
+  };
+  const AVAILABILITY_LABELS = {
+    mornings: 'Mornings',
+    afternoons: 'Afternoons',
+    evenings: 'Evenings',
+    weekends: 'Weekends',
+    flexible: "I'm flexible"
+  };
+  const CONTACT_LABELS = {
+    email: 'Email',
+    phone: 'Phone/Text',
+    'in-app': 'In-app chat'
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadProfile() {
+      if (status !== 'authenticated') return;
+      setProfileLoading(true);
+      setProfileError(null);
+      try {
+        const res = await fetch('/api/profile/me', { cache: 'no-store' });
+        if (!res.ok) throw new Error('Failed to load profile');
+        const data = await res.json();
+        if (!cancelled) setProfile(data);
+      } catch (err) {
+        if (!cancelled) setProfileError(err.message || 'Unable to load profile');
+      } finally {
+        if (!cancelled) setProfileLoading(false);
+      }
+    }
+    loadProfile();
+    return () => { cancelled = true; };
+  }, [status]);
 
   const upcomingSessions = [
     {
@@ -65,118 +115,156 @@ export default function TutorDashboard() {
     return <Loading />
   }
 
+  const userName = session?.user?.name || 'Tutor'
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Tutor Dashboard</h1>
-              <p className="text-gray-600">Welcome back, {user.name}!</p>
-            </div>
-            <button onClick={handleLogout} className="btn-secondary">
-              Logout
-            </button>
+    <div className="min-h-screen bg-background">
+      <header className="px-6 py-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className='flex items-center gap-4'>
+            <div className='w-36'><Image src={Logo} alt="" /></div>
           </div>
+          <button onClick={handleLogout} className="">Logout</button>
         </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8">
-        {/* Stats Cards */}
+        <div className='mb-4'>
+          <h1 className="text-2xl font-bold">Tutor Dashboard</h1>
+          <p className="text-muted">Welcome back, {userName}!</p>
+        </div>
+
+        <section className="grid lg:grid-cols-3 gap-6 mb-8">
+          <div className="lg:col-span-2 box-shadow bg-background p-6">
+            <h2 className="text-xl font-bold mb-4">Your Teaching Profile</h2>
+            {profileLoading ? (
+              <p className="text-muted">Loading your teaching profile…</p>
+            ) : profileError ? (
+              <p className="text-primary">{profileError}</p>
+            ) : profile?.data ? (
+              <div className="space-y-3">
+                <div className="flex justify-between"><span className="text-muted">Name</span><span className="font-medium">{profile.data.name || userName}</span></div>
+                <div className="flex justify-between"><span className="text-muted">School</span><span className="font-medium">{profile.data.school || '—'}</span></div>
+                <div className="flex justify-between"><span className="text-muted">Experience</span><span className="font-medium">{EXPERIENCE_LABELS[profile.data.experienceLevel] || '—'}</span></div>
+                <div className="flex justify-between"><span className="text-muted">Availability</span><span className="font-medium">{AVAILABILITY_LABELS[profile.data.availability] || '—'}</span></div>
+                <div className="flex justify-between"><span className="text-muted">Contact</span><span className="font-medium">{CONTACT_LABELS[profile.data.contactMethod] || '—'}</span></div>
+                <div>
+                  <div className="text-muted mb-1">Subjects</div>
+                  <div className="flex flex-wrap gap-2">
+                    {(profile.data.subjects || []).length > 0 ? (
+                      profile.data.subjects.map((s, i) => (
+                        <span key={i} className="px-2 py-1 text-sm border-2 border-foreground bg-accent font-medium">{SUBJECT_LABELS[s] || s}</span>
+                      ))
+                    ) : (
+                      <span className="text-muted">No subjects listed</span>
+                    )}
+                  </div>
+                </div>
+                {profile.data.intro ? (
+                  <div>
+                    <div className="text-muted mb-1">Introduction</div>
+                    <p className="text-sm">{profile.data.intro}</p>
+                  </div>
+                ) : null}
+              </div>
+            ) : (
+              <p className="text-muted">We couldn&apos;t find your profile details. Try reloading.</p>
+            )}
+          </div>
+
+          <div className="box-shadow bg-background p-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-accent flex items-center justify-center border-2 border-foreground">💼</div>
+              <div>
+                <p className="text-sm text-muted">Status</p>
+                <p className="text-2xl font-bold">{profile?.completed ? 'Active' : 'Pending'}</p>
+              </div>
+            </div>
+            <p className="text-sm text-muted mt-2">Your profile controls what learners see when booking you.</p>
+          </div>
+        </section>
+
         <div className="grid md:grid-cols-4 gap-6 mb-8">
-          <div className="card bg-white p-6">
+          <div className="box-shadow bg-background p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
+              <div className="w-12 h-12 bg-accent flex items-center justify-center border-2 border-foreground">🔥</div>
               <div>
-                <p className="text-sm text-gray-600">Teaching Streak</p>
-                <p className="text-2xl font-bold text-gray-900">15 days</p>
+                <p className="text-sm text-muted">Teaching Streak</p>
+                <p className="text-2xl font-bold">15 days</p>
               </div>
             </div>
           </div>
 
-          <div className="card bg-white p-6">
+          <div className="box-shadow bg-background p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                </svg>
-              </div>
+              <div className="w-12 h-12 bg-success flex items-center justify-center border-2 border-foreground">👥</div>
               <div>
-                <p className="text-sm text-gray-600">Total Students</p>
-                <p className="text-2xl font-bold text-gray-900">42</p>
+                <p className="text-sm text-muted">Total Students</p>
+                <p className="text-2xl font-bold">42</p>
               </div>
             </div>
           </div>
 
-          <div className="card bg-white p-6">
+          <div className="box-shadow bg-background p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                </svg>
-              </div>
+              <div className="w-12 h-12 bg-accent flex items-center justify-center border-2 border-foreground">⭐</div>
               <div>
-                <p className="text-sm text-gray-600">Average Rating</p>
-                <p className="text-2xl font-bold text-gray-900">4.8</p>
+                <p className="text-sm text-muted">Average Rating</p>
+                <p className="text-2xl font-bold">4.8</p>
               </div>
             </div>
           </div>
 
-          <div className="card bg-white p-6">
+          <div className="box-shadow bg-background p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                </svg>
-              </div>
+              <div className="w-12 h-12 bg-accent flex items-center justify-center border-2 border-foreground">💰</div>
               <div>
-                <p className="text-sm text-gray-600">This Month</p>
-                <p className="text-2xl font-bold text-gray-900">$340</p>
+                <p className="text-sm text-muted">This Month</p>
+                <p className="text-2xl font-bold">$340</p>
               </div>
             </div>
           </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Upcoming Sessions */}
           <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Upcoming Sessions</h2>
+            <h2 className="text-xl font-bold mb-4">Upcoming Sessions</h2>
             <div className="space-y-4">
-              {upcomingSessions.map(session => (
-                <div key={session.id} className="card bg-white p-6">
+              {upcomingSessions.length === 0 ? (
+                <div className="box-shadow bg-background p-6">
+                  <p className="text-muted">No upcoming sessions yet.</p>
+                  <p className="text-sm text-muted">When learners book you, sessions will appear here.</p>
+                </div>
+              ) : upcomingSessions.map(session => (
+                <div key={session.id} className="box-shadow bg-background p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-sm">
+                      <div className="w-10 h-10 bg-accent border-2 border-foreground flex items-center justify-center">
+                        <span className="font-bold text-sm">
                           {session.learnerName.split(' ').map(n => n[0]).join('')}
                         </span>
                       </div>
                       <div>
-                        <h3 className="font-medium text-gray-900">{session.learnerName}</h3>
-                        <p className="text-sm text-gray-600">{session.learnerLevel} level</p>
+                        <h3 className="font-medium">{session.learnerName}</h3>
+                        <p className="text-sm text-muted">{session.learnerLevel} level</p>
                       </div>
                     </div>
-                    <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                    <span className="px-3 py-1 bg-success text-background text-sm font-bold border-2 border-foreground">
                       {session.status}
                     </span>
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Subject:</span>
+                      <span className="text-muted">Subject:</span>
                       <span className="font-medium">{session.subject}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Topic:</span>
+                      <span className="text-muted">Topic:</span>
                       <span className="font-medium">{session.topic}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Time:</span>
+                      <span className="text-muted">Time:</span>
                       <span className="font-medium">{session.date} at {session.time}</span>
                     </div>
                   </div>
@@ -185,64 +273,69 @@ export default function TutorDashboard() {
                     <button className="btn-primary flex-1">
                       Join Session
                     </button>
-                    <button className="btn-secondary">
-                      Message
-                    </button>
+                    <button className="btn-primary !bg-accent">Message</button>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-
-          {/* Recent Sessions & Reviews */}
           <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Recent Reviews</h2>
+            <h2 className="text-xl font-bold mb-4">Recent Reviews</h2>
             <div className="space-y-4">
-              {recentSessions.map(session => (
-                <div key={session.id} className="card bg-white p-6">
+              {recentSessions.length === 0 ? (
+                <div className="box-shadow bg-background p-6">
+                  <p className="text-muted">No reviews yet.</p>
+                  <p className="text-sm text-muted">After you complete sessions, feedback from learners will appear here.</p>
+                </div>
+              ) : recentSessions.map(session => (
+                <div key={session.id} className="box-shadow bg-background p-6">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">
+                    <div className="w-10 h-10 bg-success border-2 border-foreground flex items-center justify-center">
+                      <span className="font-bold text-sm">
                         {session.learnerName.split(' ').map(n => n[0]).join('')}
                       </span>
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-900">{session.learnerName}</h3>
-                      <p className="text-sm text-gray-600">{session.date}</p>
+                      <h3 className="font-medium">{session.learnerName}</h3>
+                      <p className="text-sm text-muted">{session.date}</p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 mb-3">
                     {[...Array(5)].map((_, i) => (
-                      <span key={i} className={`text-lg ${i < session.rating ? 'text-yellow-400' : 'text-gray-300'}`}>
-                        ★
+                      <span key={i} className="text-lg">
+                        {i < session.rating ? '★' : '☆'}
                       </span>
                     ))}
-                    <span className="text-sm text-gray-600 ml-2">{session.subject}</span>
+                    <span className="text-sm text-muted ml-2">{session.subject}</span>
                   </div>
 
-                  <p className="text-gray-600 text-sm italic">&quot;{session.feedback}&quot;</p>
+                  <p className="text-muted text-sm italic">&quot;{session.feedback}&quot;</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Available Slots */}
         <div className="mt-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Your Available Slots</h2>
-          <div className="card bg-white p-6">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {availableSlots.map((slot, index) => (
-                <div key={index} className="p-4 border border-gray-200 rounded-lg text-center">
-                  <div className="font-medium text-gray-900">{slot}</div>
-                  <div className="text-sm text-gray-600 mt-1">Available</div>
-                </div>
-              ))}
-            </div>
-            <button className="btn-primary mt-4">
-              Manage Availability
-            </button>
+          <h2 className="text-xl font-bold mb-4">Your Available Slots</h2>
+          <div className="box-shadow bg-background p-6">
+            {availableSlots.length === 0 ? (
+              <div className="p-6">
+                <p className="text-muted">You haven&apos;t added any availability yet.</p>
+                <p className="text-sm text-muted">Add your available times so learners can book you.</p>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {availableSlots.map((slot, index) => (
+                  <div key={index} className="p-4 border-2 border-foreground text-center">
+                    <div className="font-medium">{slot}</div>
+                    <div className="text-sm text-muted mt-1">Available</div>
+                  </div>
+                ))}
+              </div>
+            )}
+            <button className="btn-primary mt-4">Manage Availability</button>
           </div>
         </div>
       </main>

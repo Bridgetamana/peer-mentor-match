@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import HeroImage from "../../../public/hero-image.avif";
+import HeroImage from "../../../public/hero-image.jpeg";
 
 export default function Hero() {
   return (
@@ -90,7 +90,7 @@ export default function Hero() {
         </Link>
       </div>
       <div className="mt-8 box-shadow">
-        <Image src={HeroImage} alt="" width={900} />
+        <Image src={HeroImage} alt=""/>
       </div>
     </section>
   );
