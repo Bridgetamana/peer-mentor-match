@@ -5,7 +5,6 @@ import { useSession, signOut } from 'next-auth/react';
 import Loading from '@/app/components/loading';
 import Image from 'next/image';
 import Logo from '../../../public/peermatch-logo.png'
-// import StatCard from '@/app/dashboard/components/StatCard';
 import LearningProfile from './components/LearningProfile';
 import RecommendedTutors from './components/RecommendedTutors';
 import BookingView from './components/BookingView';
@@ -42,8 +41,6 @@ export default function LearnerDashboard() {
   };
 
   const handleBookSession = (tutor, slot) => {
-
-    alert(`Session booked with ${tutor.name} at ${slot}!`);
     setShowBooking(false);
     setSelectedTutor(null);
   };
@@ -73,7 +70,7 @@ export default function LearnerDashboard() {
         const res = await fetch('/api/match/recommendations', { cache: 'no-store' })
         if (!res.ok) throw new Error('Failed to load recommendations')
         const json = await res.json()
-        if (active) setTutors((json.recommendations || []).map(r => ({ userId: r.userId, data: r.data, score: r.score })))
+        if (active) setTutors((json.recommendations || []).map(r => ({ userId: r.userId, email: r.email, data: r.data, score: r.score })))
       } catch {
         if (active) setTutors([])
       } finally {

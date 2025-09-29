@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import Loading from '@/app/components/loading';
 import Image from 'next/image';
 import Logo from '../../../public/peermatch-logo.png'
-// import StatCard from '@/app/dashboard/components/StatCard';
 import TeachingProfile from './components/TeachingProfile';
 import { EmptyState } from './components/EmptyState';
 import AvailabilityEditor from './components/AvailabilityEditor';

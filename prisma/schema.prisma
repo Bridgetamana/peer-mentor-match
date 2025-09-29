@@ -33,26 +33,26 @@ enum MatchStatus {
 }
 
 model MatchRequest {
-  id        Int         @id @default(autoincrement())
-  learnerId String
-  tutorId   String
-  subject   String?
-  note      String?
-  status    MatchStatus @default(pending)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id           Int         @id @default(autoincrement())
+  learnerEmail String
+  tutorEmail   String
+  subject      String?
+  note         String?
+  status       MatchStatus @default(pending)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 
-  @@index([learnerId])
-  @@index([tutorId])
+  @@index([learnerEmail])
+  @@index([tutorEmail])
 }
 
 model Connection {
-  id        Int      @id @default(autoincrement())
-  learnerId String
-  tutorId   String
-  createdAt DateTime @default(now())
+  id           Int      @id @default(autoincrement())
+  learnerEmail String
+  tutorEmail   String
+  createdAt    DateTime @default(now())
 
-  @@unique([learnerId, tutorId])
-  @@index([learnerId])
-  @@index([tutorId])
+  @@unique([learnerEmail, tutorEmail])
+  @@index([learnerEmail])
+  @@index([tutorEmail])
 }

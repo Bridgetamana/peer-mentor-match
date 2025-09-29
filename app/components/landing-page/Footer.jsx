@@ -9,7 +9,7 @@ export default function Footer() {
         <Link href="/" className="w-44">
           <Image alt="" src={Logo} />
         </Link>
-        {/* <h3 className="text-primary text-3xl font-bold">PeerMatch</h3> */}
+        {/*         <Image src={Logo} alt="PeerMatch" width={150} height={50} /> */}
         <ul className="flex flex-col md:flex-row gap-5 text-center my-6">
           <li>
             <Link

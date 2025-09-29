@@ -10,7 +10,6 @@ export default function LandingPage() {
       <main className="max-w-6xl mx-auto px-6 py-20">
         <Hero />
         <ProblemSection />
-        {/* <HowItWorks /> */}
         <Why />
         <Testimonial />
         <CTA />

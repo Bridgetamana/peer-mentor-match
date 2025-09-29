@@ -25,30 +25,31 @@ export async function GET() {
     const session = await auth()
     if (!session?.user?.id) return NextResponse.json({ recommendations: [] }, { status: 401 })
 
-  const me = await prisma.userProfile.findUnique({
-    where: { userId: session.user.id },
-    select: { role: true, completed: true, data: true },
-  })
-  if (!me?.completed || me.role !== 'learner') {
-    return NextResponse.json({ recommendations: [] }, { status: 200 })
-  }
+    const me = await prisma.userProfile.findUnique({
+      where: { userId: session.user.id },
+      select: { role: true, completed: true, data: true },
+    })
+    if (!me?.completed || me.role !== 'learner') {
+      return NextResponse.json({ recommendations: [] }, { status: 200 })
+    }
 
-  const tutors = await prisma.userProfile.findMany({
-    where: { role: 'tutor', completed: true },
-    select: { userId: true, data: true },
-  })
+    const tutors = await prisma.userProfile.findMany({
+      where: { role: 'tutor', completed: true },
+      select: { userId: true, email: true, data: true },
+    })
 
-  const scored = tutors
-    .map((t) => ({
-      userId: t.userId,
-      data: t.data || {},
-      score: scoreTutor(me.data || {}, t.data || {}),
-    }))
-    .sort((a, b) => b.score - a.score)
+    const scored = tutors
+      .map((t) => ({
+        userId: t.userId,
+        email: t.email,
+        data: t.data || {},
+        score: scoreTutor(me.data || {}, t.data || {}),
+      }))
+      .sort((a, b) => b.score - a.score)
 
-  return NextResponse.json({ recommendations: scored }, { status: 200 })
+    return NextResponse.json({ recommendations: scored }, { status: 200 })
   } catch (e) {
 
-    return NextResponse.json({ error: 'Internal error', detail: process.env.NODE_ENV !== 'production' ? String(e?.message || e) : undefined }, { status: 500 })
+    return NextResponse.json({ error: 'Internal error' }, { status: 500 })
   }
 }

@@ -14,7 +14,7 @@ export default function TutorForm({ onSubmit, onBack, submitting }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.subjects.length === 0) {
-      alert("Please select at least one subject you can help with.");
+
       return;
     }
     onSubmit({ ...formData, role: "tutor" });
