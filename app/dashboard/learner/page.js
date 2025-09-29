@@ -117,6 +117,13 @@ export default function LearnerDashboard() {
           <LearningProfile loading={loadingProfile} profile={profile} />
         </div>
 
+        <div className="mb-8">
+          <h2 className="text-xl font-bold mb-4">Upcoming Sessions</h2>
+          <div className="box-shadow bg-background p-6">
+            <div className="text-muted">No upcoming sessions yet.</div>
+            <div className="text-sm text-muted">When you book a tutor, your sessions will show up here.</div>
+          </div>
+        </div>
 
         <div>
           <h2 className="text-xl font-bold mb-4">Recommended Tutors</h2>

@@ -8,6 +8,7 @@ import Logo from '../../../public/peermatch-logo.png'
 // import StatCard from '@/app/dashboard/components/StatCard';
 import TeachingProfile from './components/TeachingProfile';
 import { EmptyState } from './components/EmptyState';
+import AvailabilityEditor from './components/AvailabilityEditor';
 
 export default function TutorDashboard() {
   const { data: session, status } = useSession();
@@ -106,13 +107,7 @@ export default function TutorDashboard() {
         </div>
 
         <section className="grid lg:grid-cols-3 gap-6 mb-8">
-          <TeachingProfile
-            loading={profileLoading}
-            error={profileError}
-            profile={profile}
-            userName={userName}
-            labels={{ SUBJECT_LABELS, EXPERIENCE_LABELS, AVAILABILITY_LABELS, CONTACT_LABELS }}
-          />
+          <TeachingProfile loading={profileLoading} error={profileError} profile={profile} />
 
           <div className="box-shadow bg-background p-6">
             <div className="flex items-center gap-4">
@@ -130,6 +125,10 @@ export default function TutorDashboard() {
           <div>
             <h2 className="text-xl font-bold mb-4">Learners</h2>
             <div className="space-y-4">
+              <h2 className="text-xl font-bold mb-4">Upcoming Sessions</h2>
+              <div className="box-shadow bg-background p-6 mb-8">
+                <EmptyState title="No upcoming sessions." message="When learners book you, your sessions will show here." />
+              </div>
               {loadingLearners ? (
                 <EmptyState title="Loading learners…" />
               ) : learners.length === 0 ? (
@@ -138,16 +137,18 @@ export default function TutorDashboard() {
                 learners.map(l => {
                   const d = l.data || {};
                   const n = d.name || 'Learner';
-                  const initials = n.split(' ').map(i => i[0]).join('');
+                  const initials = (n.trim()[0] || 'L').toUpperCase();
+                  const tutorSubjects = Array.isArray(profile?.data?.subjects) ? profile.data.subjects : [];
+                  const matched = d.subject ? tutorSubjects.includes(d.subject) : false;
                   return (
-                    <div key={l.userId} className="box-shadow bg-background p-6">
+                    <div key={l.userId} className={`box-shadow bg-background p-6 border-2 ${matched ? 'border-primary' : 'border-foreground'}`}>
                       <div className="flex items-center gap-3 mb-3">
                         <div className="w-10 h-10 bg-accent border-2 border-foreground flex items-center justify-center">
                           <span className="font-bold text-sm">{initials}</span>
                         </div>
                         <div>
                           <h3 className="font-medium">{n}</h3>
-                          {d.subject && <p className="text-sm text-muted">{d.subject}</p>}
+                          {d.subject && <p className="text-sm text-muted">{d.subject}{matched ? ' • Matched' : ''}</p>}
                         </div>
                       </div>
                       <div className="space-y-2 text-sm">
@@ -165,22 +166,12 @@ export default function TutorDashboard() {
               )}
             </div>
           </div>
-          <div>
-            <h2 className="text-xl font-bold mb-4">Your Availability</h2>
-            <div className="box-shadow bg-background p-6">
-              {profileLoading ? (
-                <EmptyState title="Loading profile…" />
-              ) : !profile?.data?.availability ? (
-                <EmptyState title="No availability set." message="Update your profile with when you are available to teach." />
-              ) : (
-                <div className="p-4 border-2 border-foreground text-center">
-                  <div className="font-medium">{AVAILABILITY_LABELS[profile.data.availability] || profile.data.availability}</div>
-                  <div className="text-sm text-muted mt-1">Based on your onboarding</div>
-                </div>
-              )}
-              <button className="btn-primary mt-4">Manage Availability</button>
-            </div>
-          </div>
+          <AvailabilityEditor
+            profile={profile}
+            loading={profileLoading}
+            labels={AVAILABILITY_LABELS}
+            onUpdated={(p) => setProfile(p)}
+          />
         </div>
       </main>
     </div>
