@@ -1,3 +1,7 @@
+import { Button } from "@progress/kendo-react-buttons";
+import { Badge } from "@progress/kendo-react-indicators";
+import { Loader } from "@progress/kendo-react-indicators";
+
 export default function RecommendedTutors({
   tutors,
   loading,
@@ -10,7 +14,8 @@ export default function RecommendedTutors({
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
       {loading ? (
         <div className="box-shadow bg-background p-6 col-span-full text-center">
-          Loading tutors…
+          <Loader className="mb-4" />
+          <div>Loading tutors…</div>
         </div>
       ) : tutors.length === 0 ? (
         <div className="box-shadow bg-background p-6 col-span-full text-center">
@@ -50,12 +55,11 @@ export default function RecommendedTutors({
                 <div className="flex flex-wrap gap-2 mb-2">
                   {subjects.length > 0 ? (
                     subjects.map((subject) => (
-                      <span
+                      <Badge
                         key={subject}
-                        className="px-2 py-1 bg-accent text-foreground text-sm border-2 border-foreground"
-                      >
-                        {subjectLabels[subject] || subject}
-                      </span>
+                        className="!bg-accent !text-foreground !text-sm !border-2 !border-foreground"
+                        text={subjectLabels[subject] || subject}
+                      />
                     ))
                   ) : (
                     <span className="text-sm text-muted">
@@ -77,13 +81,14 @@ export default function RecommendedTutors({
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <button
+                <Button
                   onClick={() => onSelect?.(t)}
-                  className="btn-primary w-full"
+                  themeColor="primary"
+                  className="w-full"
                 >
                   Contact
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={async () => {
                     try {
                       const res = await fetch("/api/match/request", {
@@ -97,10 +102,10 @@ export default function RecommendedTutors({
                       if (!res.ok) throw new Error("Failed to send request");
                     } catch (e) {}
                   }}
-                  className="box-shadow bg-accent"
+                  className="!box-shadow !bg-accent"
                 >
                   Request Match
-                </button>
+                </Button>
               </div>
             </div>
           );

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@progress/kendo-theme-default/dist/all.css";
 
 :root {
   --background: #fffdfd;
@@ -7,7 +8,7 @@
   --accent: #f0ee71;
   --primary: #ff3d64;
   --primary-dark: #d42145;
-  --success : #45cf78;
+  --success: #45cf78;
 }
 
 @theme {
@@ -83,7 +84,11 @@ p {
   line-height: 1.3;
 }
 
-h1,h2,h3,h4,h5 {
+h1,
+h2,
+h3,
+h4,
+h5 {
   line-height: 1.2;
 }
 
@@ -102,4 +107,103 @@ h1,h2,h3,h4,h5 {
 
 .testimonial-slide:hover {
   animation-play-state: paused;
+}
+
+.k-button {
+  box-shadow: 4px 4px 0px var(--foreground);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid var(--foreground);
+  border-radius: 0;
+  background: var(--accent) !important;
+  color: var(--foreground) !important;
+  border-color: var(--foreground) !important;
+}
+
+.k-button-primary {
+  background: var(--primary) !important;
+  color: white !important;
+}
+
+.k-button:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--foreground) !important;
+}
+
+.k-input,
+.k-textbox,
+.k-dropdown {
+  box-shadow: 4px 4px 0px var(--foreground);
+  border: 2px solid var(--foreground);
+  border-radius: 0;
+  font-weight: bold;
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+  border-color: var(--foreground) !important;
+}
+
+.k-input:focus,
+.k-textbox:focus,
+.k-dropdown:focus {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--foreground) !important;
+  border-color: var(--primary) !important;
+}
+
+.k-calendar {
+  box-shadow: 4px 4px 0px var(--foreground);
+  border: 2px solid var(--foreground);
+  border-radius: 0;
+  background: var(--background) !important;
+  border-color: var(--foreground) !important;
+}
+
+.k-calendar .k-calendar-cell {
+  border: 1px solid var(--foreground) !important;
+}
+
+.k-calendar .k-selected {
+  background: var(--primary) !important;
+  color: white !important;
+}
+
+.k-grid {
+  box-shadow: 4px 4px 0px var(--foreground);
+  border: 2px solid var(--foreground);
+  border-radius: 0;
+  background: var(--background) !important;
+  border-color: var(--foreground) !important;
+}
+
+.k-grid-header th {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--accent) !important;
+  color: var(--foreground) !important;
+  border-color: var(--foreground) !important;
+}
+
+.k-grid tbody td {
+  border-color: var(--foreground) !important;
+  color: var(--foreground) !important;
+}
+
+.k-dialog,
+.k-window {
+  box-shadow: 4px 4px 0px var(--foreground);
+  border: 2px solid var(--foreground);
+  border-radius: 0;
+  background: var(--background) !important;
+  border-color: var(--foreground) !important;
+}
+
+.k-dialog-title,
+.k-window-title {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--primary) !important;
+  color: white !important;
 }

@@ -1,4 +1,10 @@
 import { useState } from "react";
+import { TextBox, TextArea } from '@progress/kendo-react-inputs';
+import { DropDownList, MultiSelect } from '@progress/kendo-react-dropdowns';
+import { RadioButton } from '@progress/kendo-react-inputs';
+import { Button } from '@progress/kendo-react-buttons';
+import { Label } from '@progress/kendo-react-labels';
+import { Checkbox } from '@progress/kendo-react-inputs';
 
 export default function TutorForm({ onSubmit, onBack, submitting }) {
   const [formData, setFormData] = useState({
@@ -27,27 +33,46 @@ export default function TutorForm({ onSubmit, onBack, submitting }) {
     });
   };
 
-  const handleSubjectToggle = (subject) => {
+  const handleSubjectChange = (e) => {
     setFormData({
       ...formData,
-      subjects: formData.subjects.includes(subject)
-        ? formData.subjects.filter((s) => s !== subject)
-        : [...formData.subjects, subject]
+      subjects: e.target.value || []
     });
   };
 
-  const subjects = [
-    { id: "math", label: "Mathematics" },
-    { id: "science", label: "Science (Physics, Chemistry, Biology)" },
-    { id: "programming", label: "Programming & Computer Science" },
-    { id: "languages", label: "Languages & Literature" },
-    { id: "other", label: "Other" }
+  const subjectOptions = [
+    { text: "Mathematics", value: "math" },
+    { text: "Science (Physics, Chemistry, Biology)", value: "science" },
+    { text: "Programming & Computer Science", value: "programming" },
+    { text: "Languages & Literature", value: "languages" },
+    { text: "Other", value: "other" }
+  ];
+
+  const experienceOptions = [
+    { text: "Still learning", value: "learning" },
+    { text: "Comfortable", value: "comfortable" },
+    { text: "Expert", value: "expert" }
+  ];
+
+  const availabilityOptions = [
+    { text: "Choose availability", value: "" },
+    { text: "Mornings", value: "mornings" },
+    { text: "Afternoons", value: "afternoons" },
+    { text: "Evenings", value: "evenings" },
+    { text: "Weekends", value: "weekends" },
+    { text: "I&apos;m flexible", value: "flexible" }
+  ];
+
+  const contactOptions = [
+    { text: "📧 Email", value: "email" },
+    { text: "📱 Phone/Text", value: "phone" },
+    { text: "💬 In-app chat", value: "in-app" }
   ];
 
   return (
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-8">
-        <button
+        <Button
           onClick={onBack}
           className="box-shadow bg-accent hover:bg-accent/80 !p-2 font-medium flex items-center gap-2"
         >
@@ -55,169 +80,154 @@ export default function TutorForm({ onSubmit, onBack, submitting }) {
             <path d="M15 6C15 6 9 10.4 9 12c0 1.6 6 6 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           Back
-        </button>
+        </Button>
         <div className="!max-w-none !mb-0 font-bold text-lg">
-          Share Your Expertise
+          Tell us about your expertise
         </div>
       </div>
 
       <div className="box-shadow bg-background p-8">
         <form onSubmit={handleSubmit} className="space-y-8">
           <div>
-            <label className="block text-lg font-medium mb-4">
-              School / University <span className="text-primary">*</span>
-            </label>
-            <input
-              type="text"
-              name="school"
-              value={formData.school}
-              onChange={handleChange}
-              required
-              className="w-full p-4 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
-              placeholder="e.g., University of Lagos"
-            />
-          </div>
-          <div>
-            <label className="block text-lg font-medium mb-4">
-              Your name <span className="text-primary">*</span>
-            </label>
-            <input
-              type="text"
+            <Label className="block text-lg font-medium mb-4">
+              Your Name <span className="text-primary">*</span>
+            </Label>
+            <TextBox
               name="name"
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full p-4 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
-              placeholder="Enter your full name"
+              className="w-full !p-3 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
+              placeholder="e.g., John Doe"
             />
           </div>
+
           <div>
-            <label className="block text-lg font-medium mb-4">
-              Subjects you can help with <span className="text-primary">*</span>
-            </label>
-            <div className="grid grid-cols-1 gap-4">
-              {subjects.map((subject) => (
-                <button
-                  key={subject.id}
-                  type="button"
-                  onClick={() => handleSubjectToggle(subject.id)}
-                  className={`p-4 text-left font-medium transition-all ${formData.subjects.includes(subject.id)
-                    ? "bg-primary border-2 border-foreground text-background shadow-[6px_4px_#0d090a]"
-                    : "box-shadow bg-background hover:bg-accent/10"
-                    }`}
-                >
-                  <div className="font-bold text-lg">{subject.label}</div>
-                  {formData.subjects.includes(subject.id) && (
-                    <div className="text-sm font-medium mt-1">✓ Selected</div>
-                  )}
-                </button>
-              ))}
-            </div>
+            <Label className="block text-lg font-medium mb-4">
+              School / University <span className="text-primary">*</span>
+            </Label>
+            <TextBox
+              name="school"
+              value={formData.school}
+              onChange={handleChange}
+              required
+              className="w-full !p-3 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
+              placeholder="e.g., University of Lagos"
+            />
           </div>
+
           <div>
-            <label className="block text-lg font-medium mb-4">
-              Your experience level <span className="text-primary">*</span>
-            </label>
+            <Label className="block text-lg font-medium mb-4">
+              What subjects can you help with? <span className="text-primary">*</span>
+            </Label>
+            <MultiSelect
+              data={subjectOptions}
+              textField="text"
+              dataItemKey="value"
+              value={formData.subjects}
+              onChange={handleSubjectChange}
+              className="w-full !p-3 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
+              placeholder="Select subjects you can help with"
+            />
+          </div>
+
+          <div>
+            <Label className="block text-lg font-medium mb-4">
+              Experience Level <span className="text-primary">*</span>
+            </Label>
             <div className="grid gap-4">
               <label className="box-shadow bg-background p-4 cursor-pointer hover:bg-accent/10 transition-colors">
-                <input
-                  type="radio"
+                <RadioButton
                   name="experienceLevel"
                   value="learning"
                   checked={formData.experienceLevel === "learning"}
                   onChange={handleChange}
-                  className="mr-4 scale-125"
+                  className="mr-4"
                 />
                 <div className="inline-block">
-                  <div className="font-bold text-lg">Still learning</div>
-                  <div className="text-muted">I understand the basics and can help others get started</div>
+                  <div className="font-bold text-lg">Still Learning</div>
+                  <div className="text-muted">I&apos;m studying this subject but can help others</div>
                 </div>
               </label>
               <label className="box-shadow bg-background p-4 cursor-pointer hover:bg-accent/10 transition-colors">
-                <input
-                  type="radio"
+                <RadioButton
                   name="experienceLevel"
                   value="comfortable"
                   checked={formData.experienceLevel === "comfortable"}
                   onChange={handleChange}
-                  className="mr-4 scale-125"
+                  className="mr-4"
                 />
                 <div className="inline-block">
                   <div className="font-bold text-lg">Comfortable</div>
-                  <div className="text-muted">Solid understanding, can explain concepts well</div>
+                  <div className="text-muted">I have good knowledge and can explain concepts</div>
                 </div>
               </label>
               <label className="box-shadow bg-background p-4 cursor-pointer hover:bg-accent/10 transition-colors">
-                <input
-                  type="radio"
+                <RadioButton
                   name="experienceLevel"
                   value="expert"
                   checked={formData.experienceLevel === "expert"}
                   onChange={handleChange}
-                  className="mr-4 scale-125"
+                  className="mr-4"
                 />
                 <div className="inline-block">
                   <div className="font-bold text-lg">Expert</div>
-                  <div className="text-muted">Advanced knowledge and teaching experience</div>
+                  <div className="text-muted">I have advanced knowledge or professional experience</div>
                 </div>
               </label>
             </div>
           </div>
+
           <div>
-            <label className="block text-lg font-medium mb-4">
+            <Label className="block text-lg font-medium mb-4">
               When are you available? <span className="text-primary">*</span>
-            </label>
-            <select
-              name="availability"
-              value={formData.availability}
-              onChange={handleChange}
-              required
-              className="w-full p-4 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
-            >
-              <option value="">Choose availability</option>
-              <option value="mornings">Mornings</option>
-              <option value="afternoons">Afternoons</option>
-              <option value="evenings">Evenings</option>
-              <option value="weekends">Weekends</option>
-              <option value="flexible">I&apos;m flexible</option>
-            </select>
+            </Label>
+            <DropDownList
+              data={availabilityOptions}
+              textField="text"
+              dataItemKey="value"
+              value={availabilityOptions.find(item => item.value === formData.availability)}
+              onChange={(e) => handleChange({ target: { name: 'availability', value: e.target.value?.value || '' } })}
+              className="w-full box-shadow !p-3 !rounded-none border-2 border-foreground !bg-background focus:bg-accent/20 font-medium transition-color"
+            />
           </div>
+
           <div>
-            <label className="block text-lg font-medium mb-4">
+            <Label className="block text-lg font-medium mb-4">
               How should students contact you? <span className="text-primary">*</span>
-            </label>
-            <select
-              name="contactMethod"
-              value={formData.contactMethod}
-              onChange={handleChange}
-              required
-              className="w-full p-4 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
-            >
-              <option value="email">📧 Email</option>
-              <option value="phone">📱 Phone/Text</option>
-              <option value="in-app">💬 In-app chat</option>
-            </select>
+            </Label>
+            <DropDownList
+              data={contactOptions}
+              textField="text"
+              dataItemKey="value"
+              value={contactOptions.find(item => item.value === formData.contactMethod)}
+              onChange={(e) => handleChange({ target: { name: 'contactMethod', value: e.target.value?.value || '' } })}
+              className="box-shadow w-full !p-3 !rounded-none border-2 border-foreground !bg-background focus:bg-accent/20 font-medium transition-color"
+            />
           </div>
+
           <div>
-            <label className="block text-lg font-medium mb-4">
-              Short introduction <span className="text-muted">(optional)</span>
-            </label>
-            <textarea
+            <Label className="block text-lg font-medium mb-4">
+              Brief intro <span className="text-muted">(optional)</span>
+            </Label>
+            <TextArea
               name="intro"
               value={formData.intro}
               onChange={handleChange}
-              className="w-full p-4 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
-              placeholder="Tell learners a bit about your experience or approach"
-              rows={3}
+              className="w-full !p-3 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
+              rows={4}
+              placeholder="e.g., Hi! I'm a Computer Science student who loves helping others understand programming concepts..."
             />
           </div>
-          <button
+
+          <Button
             type="submit"
             disabled={!!submitting}
-            className="btn-primary w-full !text-xl !py-4 !font-bold !bg-success disabled:opacity-60 disabled:cursor-not-allowed"
+            themeColor="primary"
+            className="w-full !text-xl !bg-primary !py-4 !font-bold disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {submitting ? 'Submitting…' : 'Start Helping Students'}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

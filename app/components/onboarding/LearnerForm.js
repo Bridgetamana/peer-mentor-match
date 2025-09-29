@@ -1,4 +1,9 @@
 import { useState } from "react";
+import { TextBox } from '@progress/kendo-react-inputs';
+import { DropDownList } from '@progress/kendo-react-dropdowns';
+import { RadioButton } from '@progress/kendo-react-inputs';
+import { Button } from '@progress/kendo-react-buttons';
+import { Label } from '@progress/kendo-react-labels';
 
 export default function LearnerForm({ onSubmit, onBack, submitting }) {
   const [formData, setFormData] = useState({
@@ -23,18 +28,42 @@ export default function LearnerForm({ onSubmit, onBack, submitting }) {
     });
   };
 
+  const subjectOptions = [
+    { text: "Choose a subject", value: "" },
+    { text: "Mathematics", value: "math" },
+    { text: "Science (Physics, Chemistry, Biology)", value: "science" },
+    { text: "Programming & Computer Science", value: "programming" },
+    { text: "Languages & Literature", value: "languages" },
+    { text: "Other", value: "other" }
+  ];
+
+  const availabilityOptions = [
+    { text: "Choose availability", value: "" },
+    { text: "Mornings", value: "mornings" },
+    { text: "Afternoons", value: "afternoons" },
+    { text: "Evenings", value: "evenings" },
+    { text: "Weekends", value: "weekends" },
+    { text: "I&apos;m flexible", value: "flexible" }
+  ];
+
+  const contactOptions = [
+    { text: "📧 Email", value: "email" },
+    { text: "📱 Phone/Text", value: "phone" },
+    { text: "💬 In-app chat", value: "in-app" }
+  ];
+
   return (
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-8">
-        <button
+        <Button
           onClick={onBack}
-          className="box-shadow bg-accent hover:bg-accent/80 !p-2 font-medium flex items-center gap-2"
+          className="box-shadow bg-accent hover:bg-accent/80 !p-2 font-medium !flex items-center !gap-2"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
             <path d="M15 6C15 6 9 10.4 9 12c0 1.6 6 6 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           Back
-        </button>
+        </Button>
         <div className="!max-w-none !mb-0 font-bold text-lg">
           Tell us what you need help with
         </div>
@@ -43,64 +72,58 @@ export default function LearnerForm({ onSubmit, onBack, submitting }) {
       <div className="box-shadow bg-background p-8">
         <form onSubmit={handleSubmit} className="space-y-8">
           <div>
-            <label className="block text-lg font-medium mb-4">
+            <Label className="block text-lg font-medium mb-4">
               School / University <span className="text-primary">*</span>
-            </label>
-            <input
-              type="text"
+            </Label>
+            <TextBox
               name="school"
               value={formData.school}
               onChange={handleChange}
               required
-              className="w-full p-4 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
+              className="w-full !p-3 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
               placeholder="e.g., University of Lagos"
             />
           </div>
+
           <div>
-            <label className="block text-lg font-medium mb-4">
+            <Label className="block text-lg font-medium mb-4">
               Subject / Course <span className="text-primary">*</span>
-            </label>
-            <select
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-              required
-              className="w-full p-4 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
-            >
-              <option value="">Choose a subject</option>
-              <option value="math">Mathematics</option>
-              <option value="science">Science (Physics, Chemistry, Biology)</option>
-              <option value="programming">Programming & Computer Science</option>
-              <option value="languages">Languages & Literature</option>
-              <option value="other">Other</option>
-            </select>
+            </Label>
+            <DropDownList
+              data={subjectOptions}
+              textField="text"
+              dataItemKey="value"
+              value={subjectOptions.find(item => item.value === formData.subject)}
+              onChange={(e) => handleChange({ target: { name: 'subject', value: e.target.value?.value || '' } })}
+              className="box-shadow w-full !p-3 !rounded-none border-2 border-foreground !bg-background focus:bg-accent/20 font-medium transition-color"
+            />
           </div>
+
           <div>
-            <label className="block text-lg font-medium mb-4">
+            <Label className="block text-lg font-medium mb-4">
               Specific topic <span className="text-muted">(optional)</span>
-            </label>
-            <input
-              type="text"
+            </Label>
+            <TextBox
               name="specificTopic"
               value={formData.specificTopic}
               onChange={handleChange}
-              className="w-full p-4 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
+              className="w-full !p-3 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
               placeholder="e.g., Calculus, Organic Chemistry, React.js"
             />
           </div>
+
           <div>
-            <label className="block text-lg font-medium mb-4">
+            <Label className="block text-lg font-medium mb-4">
               When do you need help? <span className="text-primary">*</span>
-            </label>
+            </Label>
             <div className="grid gap-4">
               <label className="box-shadow bg-background p-4 cursor-pointer hover:bg-accent/10 transition-colors">
-                <input
-                  type="radio"
+                <RadioButton
                   name="urgency"
                   value="urgent"
                   checked={formData.urgency === "urgent"}
                   onChange={handleChange}
-                  className="mr-4 scale-125"
+                  className="mr-4"
                 />
                 <div className="inline-block">
                   <div className="font-bold text-lg">ASAP (within 2 days)</div>
@@ -108,13 +131,12 @@ export default function LearnerForm({ onSubmit, onBack, submitting }) {
                 </div>
               </label>
               <label className="box-shadow bg-background p-4 cursor-pointer hover:bg-accent/10 transition-colors">
-                <input
-                  type="radio"
+                <RadioButton
                   name="urgency"
                   value="this-week"
                   checked={formData.urgency === "this-week"}
                   onChange={handleChange}
-                  className="mr-4 scale-125"
+                  className="mr-4"
                 />
                 <div className="inline-block">
                   <div className="font-bold text-lg">This week</div>
@@ -122,13 +144,12 @@ export default function LearnerForm({ onSubmit, onBack, submitting }) {
                 </div>
               </label>
               <label className="box-shadow bg-background p-4 cursor-pointer hover:bg-accent/10 transition-colors">
-                <input
-                  type="radio"
+                <RadioButton
                   name="urgency"
                   value="flexible"
                   checked={formData.urgency === "flexible"}
                   onChange={handleChange}
-                  className="mr-4 scale-125"
+                  className="mr-4"
                 />
                 <div className="inline-block">
                   <div className="font-bold text-lg">Flexible</div>
@@ -137,61 +158,56 @@ export default function LearnerForm({ onSubmit, onBack, submitting }) {
               </label>
             </div>
           </div>
+
           <div>
-            <label className="block text-lg font-medium mb-4">
+            <Label className="block text-lg font-medium mb-4">
               Preferred availability <span className="text-primary">*</span>
-            </label>
-            <select
-              name="availability"
-              value={formData.availability}
-              onChange={handleChange}
-              required
-              className="w-full p-4 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
-            >
-              <option value="">Choose availability</option>
-              <option value="mornings">Mornings</option>
-              <option value="afternoons">Afternoons</option>
-              <option value="evenings">Evenings</option>
-              <option value="weekends">Weekends</option>
-              <option value="flexible">I&apos;m flexible</option>
-            </select>
+            </Label>
+            <DropDownList
+              data={availabilityOptions}
+              textField="text"
+              dataItemKey="value"
+              value={availabilityOptions.find(item => item.value === formData.availability)}
+              onChange={(e) => handleChange({ target: { name: 'availability', value: e.target.value?.value || '' } })}
+              className="w-full box-shadow w-full !p-3 !rounded-none border-2 border-foreground !bg-background focus:bg-accent/20 font-medium transition-color"
+            />
           </div>
+
           <div>
-            <label className="block text-lg font-medium mb-4">
+            <Label className="block text-lg font-medium mb-4">
               How should your study partner contact you? <span className="text-primary">*</span>
-            </label>
-            <select
-              name="contactMethod"
-              value={formData.contactMethod}
-              onChange={handleChange}
-              required
-              className="w-full p-4 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
-            >
-              <option value="email">📧 Email</option>
-              <option value="phone">📱 Phone/Text</option>
-              <option value="in-app">💬 In-app chat</option>
-            </select>
+            </Label>
+            <DropDownList
+              data={contactOptions}
+              textField="text"
+              dataItemKey="value"
+              value={contactOptions.find(item => item.value === formData.contactMethod)}
+              onChange={(e) => handleChange({ target: { name: 'contactMethod', value: e.target.value?.value || '' } })}
+              className="box-shadow w-full !p-3 !rounded-none border-2 border-foreground !bg-background focus:bg-accent/20 font-medium transition-color"
+            />
           </div>
+
           <div>
-            <label className="block text-lg font-medium mb-4">
-              What’s your learning goal? <span className="text-muted">(optional)</span>
-            </label>
-            <input
-              type="text"
+            <Label className="block text-lg font-medium mb-4">
+              What&apos;s your learning goal? <span className="text-muted">(optional)</span>
+            </Label>
+            <TextBox
               name="learningGoal"
               value={formData.learningGoal}
               onChange={handleChange}
-              className="w-full p-4 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
+              className="w-full !p-3 border-2 border-foreground bg-background focus:bg-accent/20 font-medium transition-colors"
               placeholder="e.g., Pass Calculus 101, improve my coding skills"
             />
           </div>
-          <button
+
+          <Button
             type="submit"
             disabled={!!submitting}
-            className="btn-primary w-full !text-xl !py-4 !font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+            themeColor="primary"
+            className="w-full !text-xl !py-4 !font-bold disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {submitting ? 'Submitting…' : 'Find My Study Partner'}
-          </button>
+          </Button>
         </form>
       </div>
     </div>
