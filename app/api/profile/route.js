@@ -34,7 +34,7 @@ export async function GET() {
 export async function POST(request) {
     try {
         const session = await auth()
-        if (!session?.user?.id) {
+        if (!session?.user?.id || !session?.user?.email) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
@@ -50,15 +50,32 @@ export async function POST(request) {
             return NextResponse.json({ error: "Invalid profile payload" }, { status: 400 })
         }
 
-        const existing = await prisma.userProfile.findUnique({ where: { userId: session.user.id }, select: { role: true, completed: true } })
+        const email = session.user.email.toLowerCase()
+        const existing = await prisma.userProfile.findFirst({
+            where: { email },
+            select: { id: true, role: true, completed: true }
+        })
+
         if (existing?.completed && existing.role !== normalized.role) {
             return NextResponse.json({ error: "Profile already completed" }, { status: 409 })
         }
 
         await prisma.userProfile.upsert({
             where: { userId: session.user.id },
-            create: { userId: session.user.id, role: normalized.role, completed: true, data: body },
-            update: { role: normalized.role, completed: true, data: body },
+            create: { 
+                userId: session.user.id, 
+                role: normalized.role, 
+                completed: true, 
+                data: body, 
+                email 
+            },
+            update: { 
+                userId: session.user.id,
+                role: normalized.role, 
+                completed: true, 
+                data: body, 
+                email 
+            },
         })
 
         const res = NextResponse.json({ ok: true, profile: normalized })

@@ -18,6 +18,8 @@ export default function LearnerDashboard() {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [tutors, setTutors] = useState([]);
   const [loadingTutors, setLoadingTutors] = useState(true);
+  const [requests, setRequests] = useState([]);
+  const [loadingRequests, setLoadingRequests] = useState(true);
 
   const SUBJECT_LABELS = {
     math: 'Mathematics',
@@ -40,7 +42,7 @@ export default function LearnerDashboard() {
   };
 
   const handleBookSession = (tutor, slot) => {
-    console.log('Booking session with', tutor.name, 'at', slot);
+
     alert(`Session booked with ${tutor.name} at ${slot}!`);
     setShowBooking(false);
     setSelectedTutor(null);
@@ -68,18 +70,32 @@ export default function LearnerDashboard() {
     async function loadTutors() {
       try {
         setLoadingTutors(true)
-        const res = await fetch('/api/profile/list?role=tutor', { cache: 'no-store' })
-        if (!res.ok) throw new Error('Failed to load tutors')
+        const res = await fetch('/api/match/recommendations', { cache: 'no-store' })
+        if (!res.ok) throw new Error('Failed to load recommendations')
         const json = await res.json()
-        if (active) setTutors(json.profiles || [])
+        if (active) setTutors((json.recommendations || []).map(r => ({ userId: r.userId, data: r.data, score: r.score })))
       } catch {
         if (active) setTutors([])
       } finally {
         if (active) setLoadingTutors(false)
       }
     }
+    async function loadRequests() {
+      try {
+        setLoadingRequests(true)
+        const res = await fetch('/api/match/request?box=outgoing', { cache: 'no-store' })
+        if (!res.ok) throw new Error('Failed to load requests')
+        const json = await res.json()
+        if (active) setRequests(json.requests || [])
+      } catch {
+        if (active) setRequests([])
+      } finally {
+        if (active) setLoadingRequests(false)
+      }
+    }
     loadProfile()
     loadTutors()
+    loadRequests()
     return () => { active = false }
   }, [])
 
@@ -115,6 +131,27 @@ export default function LearnerDashboard() {
         <div className="mb-8">
           <h2 className="text-xl font-bold mb-4">Your Learning Profile</h2>
           <LearningProfile loading={loadingProfile} profile={profile} />
+        </div>
+
+        <div className="mb-8">
+          <h2 className="text-xl font-bold mb-4">Your Requests</h2>
+          <div className="space-y-3">
+            {loadingRequests ? (
+              <div className="box-shadow bg-background p-6">Loading requests…</div>
+            ) : requests.length === 0 ? (
+              <div className="box-shadow bg-background p-6 text-muted">No requests yet.</div>
+            ) : (
+              requests.map(r => (
+                <div key={r.id} className="box-shadow bg-background p-6 flex items-center justify-between">
+                  <div>
+                    <div className="font-medium">Request to tutor</div>
+                    <div className="text-sm text-muted">Subject: {r.subject || '—'}</div>
+                  </div>
+                  <div className="text-sm font-medium capitalize">{r.status}</div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
 
         <div className="mb-8">

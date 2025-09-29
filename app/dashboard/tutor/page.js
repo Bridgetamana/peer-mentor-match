@@ -17,6 +17,8 @@ export default function TutorDashboard() {
   const [profileError, setProfileError] = useState(null);
   const [learners, setLearners] = useState([]);
   const [loadingLearners, setLoadingLearners] = useState(true);
+  const [requests, setRequests] = useState([]);
+  const [loadingRequests, setLoadingRequests] = useState(true);
 
   const SUBJECT_LABELS = {
     math: 'Mathematics',
@@ -73,8 +75,22 @@ export default function TutorDashboard() {
         if (!cancelled) setLoadingLearners(false);
       }
     }
+    async function loadRequests() {
+      try {
+        setLoadingRequests(true)
+        const res = await fetch('/api/match/request?box=incoming', { cache: 'no-store' })
+        if (!res.ok) throw new Error('Failed to load requests')
+        const data = await res.json()
+        if (!cancelled) setRequests(data.requests || [])
+      } catch (e) {
+        if (!cancelled) setRequests([])
+      } finally {
+        if (!cancelled) setLoadingRequests(false)
+      }
+    }
     loadProfile();
     loadLearners();
+    loadRequests();
     return () => { cancelled = true; };
   }, [status]);
 
@@ -123,6 +139,35 @@ export default function TutorDashboard() {
 
         <div className="grid lg:grid-cols-2 gap-8">
           <div>
+            <h2 className="text-xl font-bold mb-4">Match Requests</h2>
+            <div className="space-y-4 mb-8">
+              {loadingRequests ? (
+                <EmptyState title="Loading requests…" />
+              ) : requests.length === 0 ? (
+                <EmptyState title="No requests right now." />
+              ) : (
+                requests.map(r => (
+                  <div key={r.id} className="box-shadow bg-background p-6 border-2 border-foreground">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium">New request</div>
+                        <div className="text-sm text-muted">Subject: {r.subject || '—'}</div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button onClick={async () => {
+                          await fetch(`/api/match/request/${r.id}/accept`, { method: 'POST' })
+                          setRequests(prev => prev.filter(i => i.id !== r.id))
+                        }} className="btn-primary !bg-success">Accept</button>
+                        <button onClick={async () => {
+                          await fetch(`/api/match/request/${r.id}/reject`, { method: 'POST' })
+                          setRequests(prev => prev.filter(i => i.id !== r.id))
+                        }} className="box-shadow bg-accent">Reject</button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
             <h2 className="text-xl font-bold mb-4">Learners</h2>
             <div className="space-y-4">
               <h2 className="text-xl font-bold mb-4">Upcoming Sessions</h2>

@@ -33,7 +33,7 @@ export default function AvailabilityEditor({
       // Locally reflect the change
       onUpdated?.({ ...profile, data: nextData, completed: true });
     } catch (e) {
-      console.error(e);
+
       alert("Could not save availability. Please try again.");
     } finally {
       setSaving(false);

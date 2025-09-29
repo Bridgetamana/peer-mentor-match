@@ -76,12 +76,27 @@ export default function RecommendedTutors({
                 </span>
               </div>
 
-              <button
-                onClick={() => onSelect?.(t)}
-                className="btn-primary w-full"
-              >
-                Contact
-              </button>
+              <div className="grid grid-cols-2 gap-3">
+                <button onClick={() => onSelect?.(t)} className="btn-primary w-full">Contact</button>
+                <button
+                  onClick={async () => {
+                    try {
+                      const res = await fetch('/api/match/request', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ tutorId: t.userId, subject: data.subjects?.[0] || null })
+                      })
+                      if (!res.ok) throw new Error('Failed to send request')
+                      alert('Request sent!')
+                    } catch (e) {
+                      alert('Could not send request.')
+                    }
+                  }}
+                  className="box-shadow bg-accent"
+                >
+                  Request Match
+                </button>
+              </div>
             </div>
           );
         })
